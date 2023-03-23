@@ -48,7 +48,7 @@ public class DemoServiceImpl implements DemoService {
     public void save(Demo entity) {
         this.setDefaultValues(entity);
         this.checkEntity(entity);
-        cacheService.cache(entity.getId(), CacheType.delivery_back_channel_order_sn);
+        cacheService.cache(entity.getId(), CacheType.demo);
         repo.insert(entity);
     }
 
@@ -66,7 +66,7 @@ public class DemoServiceImpl implements DemoService {
     @Override
     @Encrypt
     public Demo selectById(String id) {
-        boolean a = cacheService.contains(id, CacheType.delivery_back_channel_order_sn);
+        boolean a = cacheService.contains(id, CacheType.demo);
         log.info("是否存在:" + a);
         try {
             demo();

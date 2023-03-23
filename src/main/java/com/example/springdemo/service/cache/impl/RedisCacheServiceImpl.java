@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * <pre>
- * 订单缓存服务redis实现，
- * 当完成缓存key切换之后，可以删除redisson的实现。
+ * 缓存服务redis实现，
+ * 当完成缓存key切换之后.
  * </pre>
  */
 @Slf4j
@@ -50,22 +50,12 @@ public class RedisCacheServiceImpl implements CacheService {
 
     @Override
     public boolean contains(String key, CacheType cacheType) {
-        return redisTemplate.hasKey(cacheType.getKey(key));
+        return Boolean.TRUE.equals(redisTemplate.hasKey(cacheType.getKey(key)));
     }
 
     @Override
     public String get(String key, CacheType cacheType) {
         return redisTemplate.opsForValue().get(cacheType.getKey(key));
-
-//        Object oldResult = getMapCache(cacheType).get(key);
-//        if (oldResult != null) {
-//            if (oldResult instanceof String) {
-//                return oldResult.toString();
-//            } else {
-//                log.warn("改版前历史缓存数据:" + oldResult);
-//                remove(key, cacheType);
-//            }
-//        }
     }
 
     @Override
@@ -74,16 +64,6 @@ public class RedisCacheServiceImpl implements CacheService {
         if (result != null) {
             return JSON.parseObject(result, clazz);
         }
-
-//        Object newResult = getMapCache(cacheType).get(key);
-//        if (newResult != null) {
-//            if (newResult instanceof String) {
-//                return JsonUtil.fromJson(newResult.toString(), clazz);
-//            } else {
-//                log.warn("改版前历史缓存数据:" + newResult);
-//                remove(key, cacheType);
-//            }
-//        }
         return null;
     }
 
@@ -93,22 +73,8 @@ public class RedisCacheServiceImpl implements CacheService {
         if (result != null) {
             return JSON.parseObject(result, typeReference);
         }
-
-//        Object newResult = getMapCache(cacheType).get(key);
-//        if (newResult != null) {
-//            if (newResult instanceof String) {
-//                return JSON.parseObject(newResult.toString(),typeReference);
-//            } else {
-//                log.warn("改版前历史缓存数据:" + newResult);
-//                remove(key, cacheType);
-//            }
-//        }
         return Collections.emptyList();
     }
-
-//    private RMapCache<Object, Object> getMapCache(CacheType cacheType) {
-//        return redissonClient.getMapCache(cacheType.getCacheKey());
-//    }
 
     @Override
     public void remove(String key, CacheType cacheType) {

@@ -1,0 +1,23 @@
+server:
+  port: 8888
+spring:
+  datasource:
+    # sqlite3 驱动
+    driver-class-name: org.sqlite.JDBC
+    # 方式一：  引用外部文件
+#    url: jdbc:sqlite:D:/myCode/spring-demo/src/main/resources/SQLiteDB/JasonSQLite.db
+    # 方式二： 引用项目中的文件
+    url: jdbc:sqlite::resource:SQLiteDB/JasonSQLite.db
+    username:
+    password:
+  redis:
+    database: 9
+    host: 127.0.0.1
+    password: 密码
+    port: 6379
+  # 本地缓存配置
+  cache:
+    type: caffeine
+    cache-names: demoCache
+    caffeine:
+      spec: initialCapacity=1000,maximumSize=100000,expireAfterWrite=60s
