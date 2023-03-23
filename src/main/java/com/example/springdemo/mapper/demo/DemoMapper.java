@@ -12,7 +12,7 @@ public interface DemoMapper extends BaseMapper<Demo> {
 
     Demo selectByPrimaryKey(String id);
 
-    List<Demo> selectAll();
+    List<Demo> selectByCondition(Demo demo);
 
     int deleteByPrimaryKey(String id);
 }

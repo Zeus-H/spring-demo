@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.springdemo.mapper.demo.DemoMapper">
+    <resultMap id="BaseResultMap" type="com.example.springdemo.entity.demo.Demo">
+        <id column="ID" property="id" jdbcType="VARCHAR"/>
+        <result column="NAME" property="name" jdbcType="VARCHAR"/>
+        <result column="AGE" property="age" jdbcType="VARCHAR"/>
+        <result column="MOBILE" property="mobile" jdbcType="VARCHAR"/>
+        <result column="ENCRYPTED_NAME" property="encryptedName" jdbcType="VARCHAR"/>
+        <result column="ENCRYPTED_MOBILE" property="encryptedMobile" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, NAME, AGE, MOBILE, ENCRYPTED_NAME, ENCRYPTED_MOBILE
+    </sql>
+    <sql id="condition">
+        <where>
+            <if test="id != null and id != ''">
+                and ID = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and NAME = #{name}
+            </if>
+            <if test="age != null and age != ''">
+                and AGE = #{age}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and MOBILE = #{mobile}
+            </if>
+            <if test="encryptedName != null and encryptedName != ''">
+                and ENCRYPTED_NAME = #{encryptedName}
+            </if>
+            <if test="encryptedMobile != null and encryptedMobile != ''">
+                and ENCRYPTED_MOBILE = #{encryptedMobile}
+            </if>
+        </where>
+        order by id desc
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_demo
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_demo
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <select id="selectByCondition" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_demo
+        <include refid="condition"/>
+    </select>
+</mapper>

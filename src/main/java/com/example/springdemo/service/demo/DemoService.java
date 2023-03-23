@@ -1,6 +1,9 @@
 package com.example.springdemo.service.demo;
 
 import com.example.springdemo.entity.demo.Demo;
+
+import java.util.List;
+
 /**
  * DemoService
  * @author generator
@@ -13,4 +16,6 @@ public interface DemoService {
 	void update(Demo entity);
 
 	Demo selectById(String id);
+
+	List<Demo> query(Demo demo);
 }

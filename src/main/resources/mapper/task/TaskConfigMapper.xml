@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.springdemo.mapper.task.TaskConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.example.springdemo.entity.task.TaskConfig" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="TASK_CODE" property="taskCode" jdbcType="VARCHAR" />
+    <result column="TASK_NAME" property="taskName" jdbcType="VARCHAR" />
+    <result column="TASK_HANDLER_BEAN" property="taskHandlerBean" jdbcType="VARCHAR" />
+    <result column="TASK_DESCRIPTION" property="taskDescription" jdbcType="VARCHAR" />
+    <result column="RUN_RULE" property="runRule" jdbcType="VARCHAR" />
+    <result column="IS_ENABLED" property="isEnabled" jdbcType="INTEGER" />
+    <result column="IS_CONTINUOUS" property="isContinuous" jdbcType="INTEGER" />
+    <result column="IS_LOGGING" property="isLogging" jdbcType="INTEGER" />
+    <result column="IS_STATISTICS" property="isStatistics" jdbcType="INTEGER" />
+    <result column="REVISION" property="revision" jdbcType="INTEGER" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATED_BY" property="updatedBy" jdbcType="VARCHAR" />
+    <result column="UPDATED_TIME" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, TASK_CODE, TASK_NAME, TASK_HANDLER_BEAN, TASK_DESCRIPTION, RUN_RULE, IS_ENABLED, 
+    IS_CONTINUOUS, IS_LOGGING, IS_STATISTICS,
+    REVISION, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_task_config
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_task_config
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.springdemo.entity.task.TaskConfig" >
+    insert into t_task_config (ID, TASK_CODE, TASK_NAME, 
+      TASK_HANDLER_BEAN, TASK_DESCRIPTION, RUN_RULE, 
+      IS_ENABLED, IS_CONTINUOUS,
+       IS_LOGGING, IS_STATISTICS,
+      REVISION, CREATED_BY, CREATED_TIME, 
+      UPDATED_BY, UPDATED_TIME)
+    values (#{id,jdbcType=VARCHAR}, #{taskCode,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, 
+      #{taskHandlerBean,jdbcType=VARCHAR}, #{taskDescription,jdbcType=VARCHAR}, #{runRule,jdbcType=VARCHAR}, 
+      #{isEnabled,jdbcType=INTEGER},#{isContinuous,jdbcType=INTEGER},
+      #{isLogging,jdbcType=INTEGER}, #{isStatistics,jdbcType=INTEGER},
+      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=VARCHAR}, #{updatedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.springdemo.entity.task.TaskConfig" >
+    insert into t_task_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="taskCode != null" >
+        TASK_CODE,
+      </if>
+      <if test="taskName != null" >
+        TASK_NAME,
+      </if>
+      <if test="taskHandlerBean != null" >
+        TASK_HANDLER_BEAN,
+      </if>
+      <if test="taskDescription != null" >
+        TASK_DESCRIPTION,
+      </if>
+      <if test="runRule != null" >
+        RUN_RULE,
+      </if>
+      <if test="isEnabled != null" >
+        IS_ENABLED,
+      </if>
+      <if test="isContinuous != null" >
+        IS_CONTINUOUS,
+      </if>
+      <if test="isLogging != null" >
+        IS_LOGGING,
+      </if>
+      <if test="isStatistics != null" >
+        IS_STATISTICS,
+      </if>
+      <if test="revision != null" >
+        REVISION,
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY,
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME,
+      </if>
+      <if test="updatedBy != null" >
+        UPDATED_BY,
+      </if>
+      <if test="updatedTime != null" >
+        UPDATED_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCode != null" >
+        #{taskCode,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskHandlerBean != null" >
+        #{taskHandlerBean,jdbcType=VARCHAR},
+      </if>
+      <if test="taskDescription != null" >
+        #{taskDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="runRule != null" >
+        #{runRule,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnabled != null" >
+        #{isEnabled,jdbcType=INTEGER},
+      </if>
+      <if test="isContinuous != null" >
+        #{isContinuous,jdbcType=INTEGER},
+      </if>
+      <if test="isLogging != null" >
+        #{isLogging,jdbcType=INTEGER},
+      </if>
+      <if test="isStatistics != null" >
+        #{isStatistics,jdbcType=INTEGER},
+      </if>
+      <if test="revision != null" >
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null" >
+        #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedTime != null" >
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.springdemo.entity.task.TaskConfig" >
+    update t_task_config
+    <set >
+      <if test="taskCode != null" >
+        TASK_CODE = #{taskCode,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        TASK_NAME = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskHandlerBean != null" >
+        TASK_HANDLER_BEAN = #{taskHandlerBean,jdbcType=VARCHAR},
+      </if>
+      <if test="taskDescription != null" >
+        TASK_DESCRIPTION = #{taskDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="runRule != null" >
+        RUN_RULE = #{runRule,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnabled != null" >
+        IS_ENABLED = #{isEnabled,jdbcType=INTEGER},
+      </if>
+      <if test="isContinuous != null" >
+        IS_CONTINUOUS = #{isContinuous,jdbcType=INTEGER},
+      </if>
+      <if test="isLogging != null" >
+        IS_LOGGING = #{isLogging,jdbcType=INTEGER},
+      </if>
+      <if test="isStatistics != null" >
+        IS_STATISTICS = #{isStatistics,jdbcType=INTEGER},
+      </if>
+      <if test="revision != null" >
+        REVISION = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null" >
+        UPDATED_BY = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedTime != null" >
+        UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.springdemo.entity.task.TaskConfig" >
+    update t_task_config
+    set TASK_CODE = #{taskCode,jdbcType=VARCHAR},
+      TASK_NAME = #{taskName,jdbcType=VARCHAR},
+      TASK_HANDLER_BEAN = #{taskHandlerBean,jdbcType=VARCHAR},
+      TASK_DESCRIPTION = #{taskDescription,jdbcType=VARCHAR},
+      RUN_RULE = #{runRule,jdbcType=VARCHAR},
+      IS_ENABLED = #{isEnabled,jdbcType=INTEGER},
+      IS_CONTINUOUS = #{isContinuous,jdbcType=INTEGER},
+      IS_LOGGING = #{isLogging,jdbcType=INTEGER},
+      IS_STATISTICS = #{isStatistics,jdbcType=INTEGER},
+      REVISION = #{revision,jdbcType=INTEGER},
+      CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      UPDATED_BY = #{updatedBy,jdbcType=VARCHAR},
+      UPDATED_TIME = #{updatedTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+      SELECT
+      <include refid="Base_Column_List"/>
+      FROM t_task_config
+      LIMIT 1000
+  </select>
+
+  <select id="queryByCondition" parameterType="com.example.springdemo.entity.task.TaskConfig" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_task_config
+    <where>
+      <if test="isEnabled != null">
+        and IS_ENABLED = #{isEnabled,jdbcType=INTEGER}
+      </if>
+    </where>
+    order by ID
+  </select>
+  <select id="startOrStopTask">
+    UPDATE t_task_config SET UPDATED_TIME = NOW(),UPDATED_BY = #{operator},IS_ENABLED = #{isEnabled} WHERE ID = #{id}
+  </select>
+</mapper>

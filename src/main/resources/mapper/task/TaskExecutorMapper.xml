@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.springdemo.mapper.task.TaskExecutorMapper" >
+  <resultMap id="BaseResultMap" type="com.example.springdemo.entity.task.TaskExecutor" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="TASK_CODE" property="taskCode" jdbcType="VARCHAR" />
+    <result column="MACHINE" property="machine" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, TASK_CODE, MACHINE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_task_executor
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_task_executor
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.springdemo.entity.task.TaskExecutor" >
+    insert into t_task_executor (ID, TASK_CODE, MACHINE
+      )
+    values (#{id,jdbcType=VARCHAR}, #{taskCode,jdbcType=VARCHAR}, #{machine,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.springdemo.entity.task.TaskExecutor" >
+    insert into t_task_executor
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="taskCode != null" >
+        TASK_CODE,
+      </if>
+      <if test="machine != null" >
+        MACHINE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCode != null" >
+        #{taskCode,jdbcType=VARCHAR},
+      </if>
+      <if test="machine != null" >
+        #{machine,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.springdemo.entity.task.TaskExecutor" >
+    update t_task_executor
+    <set >
+      <if test="taskCode != null" >
+        TASK_CODE = #{taskCode,jdbcType=VARCHAR},
+      </if>
+      <if test="machine != null" >
+        MACHINE = #{machine,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.springdemo.entity.task.TaskExecutor" >
+    update t_task_executor
+    set TASK_CODE = #{taskCode,jdbcType=VARCHAR},
+      MACHINE = #{machine,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_task_executor
+        limit 1000
+    </select>
+</mapper>

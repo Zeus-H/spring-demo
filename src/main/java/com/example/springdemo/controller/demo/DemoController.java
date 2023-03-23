@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/demo")
 public class DemoController {
@@ -27,4 +29,11 @@ public class DemoController {
     public void save(@RequestBody Demo demo){
         demoService.save(demo);
     }
+
+    @RequestMapping("/query")
+    public List<Demo> query(@RequestBody Demo demo){
+        return demoService.query(demo);
+    }
+
+
 }

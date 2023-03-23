@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.springdemo.mapper.bean.ConfigPropertyMapper">
+    <resultMap id="BaseResultMap" type="com.example.springdemo.entity.bean.ConfigProperty">
+        <id column="ID" property="id" jdbcType="VARCHAR"/>
+        <result column="ID" property="id" jdbcType="VARCHAR"/>
+        <result column="AGE" property="propertyKey" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, NAME, AGE
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_demo
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from t_demo
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+</mapper>

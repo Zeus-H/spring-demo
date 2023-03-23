@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.springdemo.mapper.task.TaskParamMapper" >
+  <resultMap id="BaseResultMap" type="com.example.springdemo.entity.task.TaskParam" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="TASK_CODE" property="taskCode" jdbcType="VARCHAR" />
+    <result column="PARAM_NAME" property="paramName" jdbcType="VARCHAR" />
+    <result column="PARAM_VALUE" property="paramValue" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, TASK_CODE, PARAM_NAME, PARAM_VALUE, DESCRIPTION
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_task_param
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_task_param
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.springdemo.entity.task.TaskParam" >
+    insert into t_task_param (ID, TASK_CODE, PARAM_NAME,
+      PARAM_VALUE, DESCRIPTION)
+    values (#{id,jdbcType=VARCHAR}, #{taskCode,jdbcType=VARCHAR}, #{paramName,jdbcType=VARCHAR}, 
+      #{paramValue,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.springdemo.entity.task.TaskParam" >
+    insert into t_task_param
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="taskCode != null" >
+        TASK_CODE,
+      </if>
+      <if test="paramName != null" >
+        PARAM_NAME,
+      </if>
+      <if test="paramValue != null" >
+        PARAM_VALUE,
+      </if>
+      <if test="description != null" >
+        DESCRIPTION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCode != null" >
+        #{taskCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paramName != null" >
+        #{paramName,jdbcType=VARCHAR},
+      </if>
+      <if test="paramValue != null" >
+        #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{DESCRIPTION,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.springdemo.entity.task.TaskParam" >
+    update t_task_param
+    <set >
+      <if test="taskCode != null" >
+        TASK_CODE = #{taskCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paramName != null" >
+        PARAM_NAME = #{paramName,jdbcType=VARCHAR},
+      </if>
+      <if test="paramValue != null" >
+        PARAM_VALUE = #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.springdemo.entity.task.TaskParam" >
+    update t_task_param
+    set TASK_CODE = #{taskCode,jdbcType=VARCHAR},
+      PARAM_NAME = #{paramName,jdbcType=VARCHAR},
+      PARAM_VALUE = #{paramValue,jdbcType=VARCHAR},
+      DESCRIPTION = #{description,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_task_param
+    limit 1000;
+  </select>
+</mapper>

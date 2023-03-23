@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * DemoServiceImpl
@@ -74,6 +75,11 @@ public class DemoServiceImpl implements DemoService {
             throw new RuntimeException(e);
         }
         return repo.selectById(id);
+    }
+
+    @Override
+    public List<Demo> query(Demo demo) {
+        return repo.selectByCondition(demo);
     }
 
     /**
