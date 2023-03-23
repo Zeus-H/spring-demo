@@ -13,6 +13,7 @@ import com.example.springdemo.mapper.task.TaskExecutorMapper;
 import com.example.springdemo.mapper.task.TaskParamMapper;
 import com.example.springdemo.service.task.TaskHandler;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronExpression;
 import org.quartz.JobDataMap;
@@ -58,9 +59,9 @@ public class DataLoadHandler implements TaskHandler {
                     }
                 });
             }
-//            taskScheduler.refreshTaskConfig(configMap);
+            taskScheduler.refreshTaskConfig(configMap);
         } else {
-//            taskScheduler.refreshTaskConfig(Maps.newHashMap());
+            taskScheduler.refreshTaskConfig(Maps.newHashMap());
         }
 
         return 0;
