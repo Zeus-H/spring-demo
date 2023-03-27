@@ -8,7 +8,7 @@ CLEAN_PATH=/home/
 cd $CLEAN_PATH
 
 # 查找最大的 .log 和 .err 文件，并将结果保存到数组中
-log_files=$(find . -type f \( -name "*.log" -o -name "*.err" \) -printf "%s %p\n" | sort -rn | head -n 2 | awk '{print $2}')
+log_files=($(find . -type f \( -name "*.log" -o -name "*.err" \) -printf "%s %p\n" | sort -rn | head -n 2 | awk '{print $2}'))
 
 
 # 获取磁盘使用率，并将百分比转换为整数
