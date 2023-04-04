@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# wget https://raw.githubusercontent.com/Zeus-H/spring-demo/master/src/main/resources/sh/timed_task.sh
+
 wget https://raw.githubusercontent.com/Zeus-H/spring-demo/master/src/main/resources/sh/clean_logs.sh
 echo "下载脚本..."
 

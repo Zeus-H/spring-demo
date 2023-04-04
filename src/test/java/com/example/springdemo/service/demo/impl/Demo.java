@@ -6,7 +6,7 @@ package com.example.springdemo.service.demo.impl;
  **/
 public class Demo {
     public static void main(String[] args) {
-        //打印打印
+        //
 
     }
 }
