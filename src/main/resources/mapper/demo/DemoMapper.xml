@@ -51,4 +51,24 @@
         FROM t_demo
         <include refid="condition"/>
     </select>
+    <select id="selectByRules" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_demo
+        <where>
+            <foreach collection="rules"  item="rule" >
+                <choose>
+                    <when test="rule.symbol == 'in' or rule.symbol == 'not in'">
+                        and ${rule.ruleCode} ${rule.symbol}
+                        <foreach collection="rule.ruleValue.split(',')" item="value" open="(" separator="," close=")">
+                            #{value}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        and ${rule.ruleCode} ${rule.symbol} #{rule.ruleValue}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+    </select>
 </mapper>

@@ -1,7 +1,15 @@
 package com.example.springdemo.service.demo.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.example.springdemo.entity.demo.Demo;
+import com.example.springdemo.entity.demo.Rule;
+import com.example.springdemo.service.demo.DemoService;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -10,7 +18,8 @@ import java.util.*;
  * @author Mr.Huang
  * @date 2023/4/3 17:44
  **/
-public class Demo {
+@SpringBootTest
+public class DemoTest {
     @Data
     static class User {
         private String name;
@@ -72,7 +81,7 @@ public class Demo {
         // 差异
         address2Config.put("street", "Huangpu");
         address2Config.put("phones", Arrays.asList("222222222", "111111111"));
-        config.put("addresses", Arrays.asList(address2Config));
+        config.put("addresses", Collections.singletonList(address2Config));
 
         // 进行递归
         compare(user, config);
@@ -114,6 +123,48 @@ public class Demo {
             } else if (!Objects.equals(expectedValue, actualValue)) {
                 System.out.println("Field " + fieldName + " does not match!" + " expectedValue: " + expectedValue + "; actualValue: " + actualValue);
             }
+        }
+    }
+
+    @Autowired
+    private DemoService demoService;
+    @Test
+    public void two() {
+        List<Rule> rules = new ArrayList<>();
+        Rule rule = Rule.builder()
+                .ruleCode("name")
+                .ruleValue("2")
+                .symbol(">")
+                .build();
+        rules.add(rule);
+        Rule rule1 = Rule.builder()
+                .ruleCode("name")
+                .ruleValue("7")
+                .symbol("<")
+                .build();
+        rules.add(rule1);
+        Rule rule2 = Rule.builder()
+                .ruleCode("name")
+                .ruleValue("4, 5, 6")
+                .symbol("in")
+                .build();
+        rules.add(rule2);
+        Rule rule3 = Rule.builder()
+                .ruleCode("name")
+                .ruleValue("5")
+                .symbol("not in")
+                .build();
+        rules.add(rule3);
+        Rule rule4 = Rule.builder()
+                .ruleCode("name")
+                .ruleValue("6")
+                .symbol("!=")
+                .build();
+        rules.add(rule4);
+        List<Demo> demos = demoService.queryByRules(rules);
+        System.out.println("-----------------------------------------------------------");
+        for (Demo demo : demos) {
+            System.out.println(JSONObject.toJSONString(demo));
         }
     }
 
