@@ -1,15 +1,14 @@
 package com.example.springdemo.service.demo.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.springdemo.entity.demo.Address;
 import com.example.springdemo.entity.demo.Demo;
 import com.example.springdemo.entity.demo.Rule;
+import com.example.springdemo.entity.demo.User;
 import com.example.springdemo.service.demo.DemoService;
-import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -20,20 +19,6 @@ import java.util.*;
  **/
 @SpringBootTest
 public class DemoTest {
-    @Data
-    static class User {
-        private String name;
-        private int age;
-        private List<Integer> scores;
-        private List<Address> addresses;
-    }
-    @Data
-    static class Address {
-        private String city;
-        private String street;
-        private List<String> phones;
-    }
-
     public static void main(String[] args) throws Exception {
         User user = new User();
         user.setName("Alice");
@@ -62,15 +47,18 @@ public class DemoTest {
         User user = new User();
         user.setName("Alice");
         user.setScores(Arrays.asList(90, 80, 70));
+        List<Address> addressList = new ArrayList<>();
         Address address1 = new Address();
         address1.setCity("Beijing");
         address1.setStreet("Wudaokou");
         address1.setPhones(Arrays.asList("123456789", "987654321"));
+        addressList.add(address1);
         Address address2 = new Address();
         address2.setCity("Shanghai");
         address2.setStreet("Jingan");
         address2.setPhones(Arrays.asList("123456789", "987654321"));
-        user.setAddresses(Arrays.asList(address1, address2));
+        addressList.add(address2);
+        user.setAddresses(addressList);
 
         // 定义的值
         Map<String, Object> config = new HashMap<>();
