@@ -21,3 +21,7 @@ spring:
     cache-names: demoCache
     caffeine:
       spec: initialCapacity=1000,maximumSize=100000,expireAfterWrite=60s
+#spring boot集成mybatis的方式打印sql
+logging:
+  level:
+    com.example.springdemo.mapper: DEBUG
