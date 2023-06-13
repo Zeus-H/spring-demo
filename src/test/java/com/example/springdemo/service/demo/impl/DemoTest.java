@@ -6,9 +6,11 @@ import com.example.springdemo.entity.demo.Demo;
 import com.example.springdemo.entity.demo.Rule;
 import com.example.springdemo.entity.demo.User;
 import com.example.springdemo.service.demo.DemoService;
+import com.example.springdemo.service.demo.ReturnDelivery;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -40,7 +42,9 @@ public class DemoTest {
         }
     }
 
-    /** 数据库动态设置key-value实体字段和值，然后进行比对。 递归的方式进行处理 */
+    /**
+     * 数据库动态设置key-value实体字段和值，然后进行比对。 递归的方式进行处理
+     */
     @Test
     public void one() throws IllegalAccessException {
         // 赋值
@@ -116,6 +120,7 @@ public class DemoTest {
 
     @Autowired
     private DemoService demoService;
+
     @Test
     public void two() {
         List<Rule> rules = new ArrayList<>();
@@ -153,6 +158,53 @@ public class DemoTest {
         System.out.println("-----------------------------------------------------------");
         for (Demo demo : demos) {
             System.out.println(JSONObject.toJSONString(demo));
+        }
+    }
+
+    @Autowired
+    private ApplicationContext context;
+
+    @Test
+    public void three() {
+        ReturnDelivery tbDelivery = context.getBean("tbDelivery", ReturnDelivery.class);
+        tbDelivery.returnSend();
+
+        if (context.containsBean("dyDelivery")) {
+            ReturnDelivery delivery = context.getBean("dyDelivery", ReturnDelivery.class);
+            delivery.returnSend();
+        } else {
+            System.out.println("没有 DyDelivery bean");
+        }
+    }
+
+    @Test
+    public void four() {
+        Map<String, Integer> order = new HashMap<>();
+        order.put("1", 1);
+        order.put("2", 1);
+        order.put("4", 1);
+        Map<String, Integer> Result = new HashMap<>();
+        Result.put("1", 1);
+        Result.put("2", 1);
+        Result.put("3", 1);
+
+        boolean flag = true;
+
+        // 比较键值对
+        for (Map.Entry<String, Integer> entry : Result.entrySet()) {
+            // 检查键是否存在于第二个Map，并比较值是否相等
+            if (order.size() != Result.size() ||
+                    !order.containsKey(entry.getKey()) ||
+                    !Objects.equals(order.get(entry.getKey()), entry.getValue())) {
+                // 键值对不完全匹配
+                flag = false;
+            }
+        }
+
+        if (flag) {
+            System.out.println("所有键值对完全匹配");
+        } else {
+            System.out.println("键值对不完全匹配");
         }
     }
 
