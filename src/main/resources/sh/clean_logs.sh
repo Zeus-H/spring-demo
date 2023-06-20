@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 定义阈值和需要清理的路径
-THRESHOLD=85
+THRESHOLD=80
 CLEAN_PATH=/home/
 
 # 进入路径

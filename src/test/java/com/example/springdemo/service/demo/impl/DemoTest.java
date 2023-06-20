@@ -7,11 +7,13 @@ import com.example.springdemo.entity.demo.Rule;
 import com.example.springdemo.entity.demo.User;
 import com.example.springdemo.service.demo.DemoService;
 import com.example.springdemo.service.demo.ReturnDelivery;
+import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -22,23 +24,46 @@ import java.util.*;
 @SpringBootTest
 public class DemoTest {
     public static void main(String[] args) throws Exception {
-        User user = new User();
-        user.setName("Alice");
-        user.setAge(20);
+//        User user = new User();
+//        user.setName("Alice");
+//        user.setAge(20);
+//
+//        Map<String, Object> config = new HashMap<>();
+//        config.put("name", "Alice");
+//        config.put("age", 18);
+//
+//        Class<?> clazz = User.class;
+//        for (Map.Entry<String, Object> entry : config.entrySet()) {
+//            String fieldName = entry.getKey();
+//            Object expectedValue = entry.getValue();
+//            Field field = clazz.getDeclaredField(fieldName);
+//            field.setAccessible(true);
+//            Object actualValue = field.get(user);
+//
+//            System.out.println(fieldName + " == " + Objects.equals(expectedValue, actualValue));
+//        }
 
-        Map<String, Object> config = new HashMap<>();
-        config.put("name", "Alice");
-        config.put("age", 18);
+        String[] folderNames = {"1","2","3"};
+        String directoryPath = ""; // 指定目录路径
 
-        Class<?> clazz = User.class;
-        for (Map.Entry<String, Object> entry : config.entrySet()) {
-            String fieldName = entry.getKey();
-            Object expectedValue = entry.getValue();
-            Field field = clazz.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            Object actualValue = field.get(user);
+        File directory = new File(directoryPath);
 
-            System.out.println(fieldName + " == " + Objects.equals(expectedValue, actualValue));
+        if (directory.exists()) {
+            for (String folderName : folderNames) {
+                directory = new File(directoryPath + "\\" + folderName);
+                if (!directory.exists()) {
+                    boolean created = directory.mkdirs(); // 创建文件夹
+                    if (created) {
+                        System.out.println("文件夹创建成功");
+                    } else {
+                        System.out.println("文件夹创建失败");
+                    }
+                } else {
+                    System.out.println("文件夹已存在");
+                }
+            }
+        } else {
+            System.out.println("文件夹已存在");
         }
     }
 
@@ -208,4 +233,44 @@ public class DemoTest {
         }
     }
 
+    @Test
+    public void five() {
+        // 读取指定目录的目录名
+        File file = new File("");
+        File[] files = file.listFiles();
+        if (files != null) {
+            for (File file1 : files) {
+                System.out.println(file1.getName());
+            }
+        }
+    }
+
+    @Test
+    public void six() {
+        int n = 3;  // 2个会议室
+        int[][] meetings = new int[][]{{1,20},{2,10},{3,5},{4,9},{6,8}};    // 会议场次时间 [开始时间, 结束时间]
+
+        int[] cnt = new int[n];
+        PriorityQueue<Integer> idle = new PriorityQueue<>();
+        for (int i = 0; i < n; ++i) idle.offer(i);
+        PriorityQueue<Pair<Long, Integer>> using = new PriorityQueue<>((a, b) -> !Objects.equals(a.getKey(), b.getKey()) ? Long.compare(a.getKey(), b.getKey()) : Integer.compare(a.getValue(), b.getValue()));
+        Arrays.sort(meetings, Comparator.comparingInt(a -> a[0]));
+        for (int[] m : meetings) {
+            long st = m[0], end = m[1];
+            while (!using.isEmpty() && using.peek().getKey() <= st) {
+                idle.offer(using.poll().getValue()); // 维护在 st 时刻空闲的会议室
+            }
+            int id;
+            if (idle.isEmpty()) {
+                Pair<Long, Integer> p = using.poll(); // 没有可用的会议室，那么弹出一个最早结束的会议室（若有多个同时结束的，会弹出下标最小的）
+                end += p.getKey() - st; // 更新当前会议的结束时间
+                id = p.getValue();
+            } else id = idle.poll();
+            ++cnt[id];
+            using.offer(new Pair<>(end, id)); // 使用一个会议室
+        }
+        int ans = 0;
+        for (int i = 0; i < n; ++i) if (cnt[i] > cnt[ans]) ans = i;
+        System.out.println(ans);
+    }
 }
