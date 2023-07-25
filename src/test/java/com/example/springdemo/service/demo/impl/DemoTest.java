@@ -206,7 +206,7 @@ public class DemoTest {
     public void four() {
         Map<String, Integer> order = new HashMap<>();
         order.put("1", 1);
-        order.put("2", 1);
+        order.put("2", 2);
         order.put("4", 1);
         Map<String, Integer> Result = new HashMap<>();
         Result.put("1", 1);
