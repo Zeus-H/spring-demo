@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Redis服务器的主机和端口
+REDIS_HOST="0.0.0.0"
+REDIS_PORT="6379"
+
+# Redis连接密码，如果没有密码可以留空
+REDIS_PASSWORD="admin"
+
+# 清空Redis数据库命令
+FLUSH_DB_COMMAND="FLUSHDB"
+
+# 使用redis-cli执行清空数据库命令
+if [ -n "$REDIS_PASSWORD" ]; then
+    # 如果设置了密码，则使用密码连接到Redis服务器
+    redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" -a "$REDIS_PASSWORD" "$FLUSH_DB_COMMAND"
+else
+    # 如果没有密码，直接连接到Redis服务器
+    redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" "$FLUSH_DB_COMMAND"
+fi
+
+# 检查命令是否执行成功
+if [ $? -eq 0 ]; then
+    echo "Redis数据库已成功清空。"
+else
+    echo "清空Redis数据库时发生错误。"
+fi

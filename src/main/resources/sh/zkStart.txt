@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# 指定 ZooKeeper 安装目录
+ZOOKEEPER_HOME=/opt/zookeeper
+
+# 设置 Java 虚拟机参数
+ZOO_JVM_OPTS="-Xms4g -Xmx20g -XX:+UseG1GC"
+
+# 启动 ZooKeeper 服务器
+$ZOOKEEPER_HOME/bin/zkServer.sh start

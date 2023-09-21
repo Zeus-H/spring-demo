@@ -1,0 +1,52 @@
+#!/bin/bash
+
+TOP_PATH=$(pwd)
+INSTALL_PATH=/usr/local/redis
+PORT=6379
+DEFAULT_PASS=123456
+OPEN_REMOTE_ACCEPT=1
+DUMP_PATH=${INSTALL_PATH}/dump
+DEFAULT_CONF=${INSTALL_PATH}/redis.conf
+PACKAGE=${TOP_PATH}/redis-7.0.2.tar.gz
+
+install(){
+
+
+    ## 解压缩
+    tar zxvf ${PACKAGE} >/dev/null 2>&1
+    ## 移动
+    mv ${PACKAGE%.tar.gz*} ${INSTALL_PATH}
+    ## 编译（如果报错则在make后添加如下参数）
+    ## make MALLOC=libc
+    cd ${INSTALL_PATH} && make >/dev/null 2>&1
+    ## 安装
+    cd ${INSTALL_PATH}/src && make install >/dev/null 2>&1
+
+    ## 配置端口
+    sed -i "s/6379/${PORT}/g" ${DEFAULT_CONF}
+
+    ## 配置持久化快照目录
+    [ ! -d ${DUMP_PATH} ] && mkdir -p ${DUMP_PATH}
+    sed -i "s!dir ./!dir ${DUMP_PATH}/!g" ${DEFAULT_CONF}
+
+    ## 设置密码
+    sed -i "1036a requirepass ${DEFAULT_PASS}" ${DEFAULT_CONF}
+
+    ## 允许远程访问
+    if [ ${OPEN_REMOTE_ACCEPT} -eq 1 ];then
+        sed -i "s/bind 127.0.0.1 -::1/#bind 127.0.0.1 -::1/g" ${DEFAULT_CONF}
+        sed -i "s/protected-mode yes/protected-mode no/g" ${DEFAULT_CONF}
+    fi
+
+    ## 启动服务
+    ${INSTALL_PATH}/src/redis-server ${INSTALL_PATH}/redis.conf >/dev/null 2>&1 &
+
+    ## 服务脚本
+    chmod 777 ${TOP_PATH}/redis-server.sh
+    \cp ${TOP_PATH}/redis-server.sh /usr/local/bin/
+
+}
+
+
+install
+

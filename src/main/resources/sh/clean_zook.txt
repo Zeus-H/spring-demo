@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# 设置ZooKeeper数据目录
+zookeeper_data_dir="/tmp/zookeeper/version-2/"
+
+# 检查磁盘使用情况
+disk_usage=$(df -h "$zookeeper_data_dir" | awk 'NR==2 {print $5}' | cut -d'%' -f1)
+
+# 设置磁盘使用阈值（超过这个阈值将触发清理）
+threshold=80
+
+# 检查磁盘使用是否超过阈值
+if [ "$disk_usage" -gt "$threshold" ]; then
+  echo "磁盘使用超过阈值，开始清理..."
+
+  # 删除旧的ZooKeeper日志文件
+  find "$zookeeper_data_dir" -name "log.*" -type f -delete
+
+  # 删除旧的ZooKeeper快照文件
+  find "$zookeeper_data_dir" -name "snapshot.*" -type f -delete
+
+  echo "清理完成。"
+else
+  echo "磁盘使用未超过阈值，无需清理。"
+fi
