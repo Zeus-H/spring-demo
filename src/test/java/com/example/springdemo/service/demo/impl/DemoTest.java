@@ -1,5 +1,13 @@
 package com.example.springdemo.service.demo.impl;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.fastjson.JSONObject;
 import com.example.springdemo.entity.demo.Address;
 import com.example.springdemo.entity.demo.Demo;
@@ -7,13 +15,17 @@ import com.example.springdemo.entity.demo.Rule;
 import com.example.springdemo.entity.demo.User;
 import com.example.springdemo.service.demo.DemoService;
 import com.example.springdemo.service.demo.ReturnDelivery;
+import com.example.springdemo.service.demo.impl.util.TestFileUtil;
 import javafx.util.Pair;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-import java.io.File;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -258,12 +270,12 @@ public class DemoTest {
         for (int[] m : meetings) {
             long st = m[0], end = m[1];
             while (!using.isEmpty() && using.peek().getKey() <= st) {
-                idle.offer(using.poll().getValue()); // 维护在 st 时刻空闲的会议室
+                idle.offer(Objects.requireNonNull(using.poll()).getValue()); // 维护在 st 时刻空闲的会议室
             }
             int id;
             if (idle.isEmpty()) {
                 Pair<Long, Integer> p = using.poll(); // 没有可用的会议室，那么弹出一个最早结束的会议室（若有多个同时结束的，会弹出下标最小的）
-                end += p.getKey() - st; // 更新当前会议的结束时间
+                end += Objects.requireNonNull(p).getKey() - st; // 更新当前会议的结束时间
                 id = p.getValue();
             } else id = idle.poll();
             ++cnt[id];
@@ -272,5 +284,90 @@ public class DemoTest {
         int ans = 0;
         for (int i = 0; i < n; ++i) if (cnt[i] > cnt[ans]) ans = i;
         System.out.println(ans);
+    }
+
+    @Test
+    public void seven(){
+        BufferedReader myBufferedReader = null;
+
+        try {
+            myBufferedReader = new BufferedReader(new FileReader("C:\\Users\\2588\\Desktop\\genneric.txt"));
+            String line;
+            while ((line = myBufferedReader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (FileNotFoundException error) {
+            System.out.println(error.getMessage());
+            System.out.println("1");
+            return;
+        } catch (Exception error) {
+            System.out.println(error.getMessage());
+            System.out.println("2");
+        } finally {
+            try {
+                if (myBufferedReader != null) {
+                    myBufferedReader.close();
+                }
+                System.out.println("3");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Done");
+    }
+
+    /**
+     * 导出的demo代码
+     */
+    @Test
+    public void repeatedWrite() {
+        // 方法1: 如果写到同一个sheet
+        String fileName;
+        // 查询的数量
+        long nums = 1000;
+        long sheetNums = 10;
+
+        // 方法2: 如果写到不同的sheet 同一个对象
+        fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 指定文件  .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()) 自适应宽度
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).build()) {
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
+            for (int i = 0; i < sheetNums; i++) {
+                // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样
+                WriteSheet writeSheet = EasyExcel.writerSheet(i, "模板" + i).build();
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data(nums/sheetNums);
+                excelWriter.write(data, writeSheet);
+            }
+        }
+
+    }
+
+    @Getter
+    @Setter
+    @EqualsAndHashCode
+    public static class DemoData {
+        @ExcelProperty("字符串标题")
+        private String string;
+        @ExcelProperty("日期标题")
+        @ColumnWidth(20)
+        private Date date;
+        @ExcelProperty("数字标题")
+        private Double doubleData;
+        /** 忽略这个字段 */
+        @ExcelIgnore
+        private String ignore;
+    }
+
+    private List<DemoData> data(long nums) {
+        List<DemoData> list = ListUtils.newArrayList();
+        for (int i = 0; i < nums; i++) {
+            DemoData data = new DemoData();
+            data.setString("字符串" + i);
+            data.setDate(new Date());
+            data.setDoubleData(new Random().nextDouble());
+            list.add(data);
+        }
+        return list;
     }
 }
