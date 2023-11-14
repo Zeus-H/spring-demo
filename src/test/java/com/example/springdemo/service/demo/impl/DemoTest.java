@@ -344,7 +344,7 @@ public class DemoTest {
         // 这里 指定文件  .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()) 自适应宽度
         try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).build()) {
             // 去调用写入,实际使用时根据数据库分页的总的页数来。这里最终会写到pageSize个sheet里面
-            for (int i = 1; i <= pageSize; i++) {
+            for (int i = 0; i < pageSize; i++) {
                 // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样
                 WriteSheet writeSheet = EasyExcel.writerSheet(i, "模板" + i).build();
                 // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
