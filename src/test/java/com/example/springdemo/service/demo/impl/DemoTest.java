@@ -28,6 +28,8 @@ import org.springframework.context.ApplicationContext;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author Mr.Huang
@@ -322,25 +324,36 @@ public class DemoTest {
     @Test
     public void repeatedWrite() {
         // 方法1: 如果写到同一个sheet
-        String fileName;
-        // 查询的数量
-        long nums = 1000;
-        long sheetNums = 10;
+        String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        // sheet 的页数
+        int pageSize = 12;
+        // 生成 1-10000的数
+        List<Integer> totalNums = IntStream.rangeClosed(1, 10001)
+                .boxed()
+                .collect(Collectors.toList());
+        System.out.println("-------- 开始导出 --------");
 
-        // 方法2: 如果写到不同的sheet 同一个对象
-        fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        // 计算每页的元素数量
+        int elementsPerPage = (int) Math.ceil((double) totalNums.size() / pageSize);
+
+        // 使用 Java 8 流将 totalNums 划分为 pageSize 个子列表
+        List<List<Integer>> pages = IntStream.range(0, pageSize)
+                .mapToObj(i -> totalNums.subList(i * elementsPerPage, Math.min((i + 1) * elementsPerPage, totalNums.size())))
+                .collect(Collectors.toList());
+
         // 这里 指定文件  .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()) 自适应宽度
         try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).build()) {
-            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
-            for (int i = 0; i < sheetNums; i++) {
+            // 去调用写入,实际使用时根据数据库分页的总的页数来。这里最终会写到pageSize个sheet里面
+            for (int i = 1; i <= pageSize; i++) {
                 // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样
                 WriteSheet writeSheet = EasyExcel.writerSheet(i, "模板" + i).build();
                 // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
-                List<DemoData> data = data(nums/sheetNums);
+                List<DemoData> data = data(pages.get(i));
                 excelWriter.write(data, writeSheet);
+                System.out.println("-------- 导出中" + i + " --------");
             }
+            System.out.println("-------- 导出成功！！！------");
         }
-
     }
 
     @Getter
@@ -359,11 +372,11 @@ public class DemoTest {
         private String ignore;
     }
 
-    private List<DemoData> data(long nums) {
+    private List<DemoData> data(List<Integer> totalNums) {
         List<DemoData> list = ListUtils.newArrayList();
-        for (int i = 0; i < nums; i++) {
+        for (Integer nums : totalNums) {
             DemoData data = new DemoData();
-            data.setString("字符串" + i);
+            data.setString("字符串" + nums);
             data.setDate(new Date());
             data.setDoubleData(new Random().nextDouble());
             list.add(data);
