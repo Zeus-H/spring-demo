@@ -17,9 +17,7 @@ import com.example.springdemo.service.demo.DemoService;
 import com.example.springdemo.service.demo.ReturnDelivery;
 import com.example.springdemo.service.demo.impl.util.TestFileUtil;
 import javafx.util.Pair;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -356,8 +354,7 @@ public class DemoTest {
         }
     }
 
-    @Getter
-    @Setter
+    @Data
     @EqualsAndHashCode
     public static class DemoData {
         @ExcelProperty("字符串标题")
