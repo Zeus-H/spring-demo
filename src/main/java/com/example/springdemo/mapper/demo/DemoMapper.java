@@ -18,4 +18,6 @@ public interface DemoMapper extends BaseMapper<Demo> {
     List<Demo> selectByRules(List<Rule> rules);
 
     int deleteByPrimaryKey(String id);
+
+    int selectCountByCondition(Demo demo);
 }

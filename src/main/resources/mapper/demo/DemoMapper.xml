@@ -71,4 +71,9 @@
             </foreach>
         </where>
     </select>
+    <select id="selectCountByCondition" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM t_demo
+        <include refid="condition"/>
+    </select>
 </mapper>
