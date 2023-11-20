@@ -3,9 +3,10 @@
 # 定义阈值和需要清理的路径
 THRESHOLD=80
 CLEAN_PATH=/home/
+LOG_PATH=/data/logs
 
 # 进入路径
-cd $CLEAN_PATH
+cd $CLEAN_PATH || exit
 
 # 查找最大的 .log 和 .err 文件，并将结果保存到数组中
 log_files=($(find . -type f \( -name "*.log" -o -name "*.err" \) -printf "%s %p\n" | sort -rn | head -n 2 | awk '{print $2}'))
@@ -20,4 +21,7 @@ if [ $USAGE -ge $THRESHOLD ]; then
       cat /dev/null > "$file"
       echo "$file :文件已清空..."
   done
+
+  cd $LOG_PATH || exit
+  find $LOG_PATH -type f ! -name "*.$(date +'%Y-%m-%d').*.log" -exec rm -f {} +
 fi

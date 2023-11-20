@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.example.springdemo.entity.demo.Demo;
 import com.example.springdemo.mapper.demo.DemoMapper;
 import com.example.springdemo.service.task.exception.CommonException;
-import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
