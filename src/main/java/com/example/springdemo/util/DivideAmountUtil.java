@@ -36,6 +36,7 @@ public class DivideAmountUtil {
         Map<T, BigDecimal> result = Maps.newHashMap();
         for (T item : items) {
             if ( totalPrice.compareTo(BigDecimal.ZERO) > 0) {
+                // 实收总额 *  / 传进来的售价
                 result.put( item, totalDivideAmount.abs().multiply( totalAmountHandler.at(item).abs() ).divide( totalPrice,2, RoundingMode.DOWN) );
             }else{
                 result.put( item, BigDecimal.ZERO );
