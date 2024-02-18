@@ -2,12 +2,14 @@ package com.example.springdemo.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 均摊工具类
@@ -36,7 +38,7 @@ public class DivideAmountUtil {
         Map<T, BigDecimal> result = Maps.newHashMap();
         for (T item : items) {
             if ( totalPrice.compareTo(BigDecimal.ZERO) > 0) {
-                // 实收总额 *  / 传进来的售价
+                // 实收总额 * 售价 / 售价总额
                 result.put( item, totalDivideAmount.abs().multiply( totalAmountHandler.at(item).abs() ).divide( totalPrice,2, RoundingMode.DOWN) );
             }else{
                 result.put( item, BigDecimal.ZERO );
@@ -51,6 +53,7 @@ public class DivideAmountUtil {
 
         if (itemTotalDivideAmount.compareTo(totalDivideAmount.abs()) != 0) {
 
+            // 找到最大的售价的明细，把分配不尽的金额 加到这上面
             T maxAmountItem = items.stream()
                     .max(Comparator.comparing(o -> totalAmountHandler.at(o).abs()))
                     .orElseThrow( () -> new IllegalArgumentException("item not find!"));
@@ -80,19 +83,15 @@ public class DivideAmountUtil {
         BigDecimal at(T item);
     }
 
+    /**
+     * 存在问题：
+     *  因为金额和数量是相乘了，均摊完后的金额 除于 数量会出现除不尽，又丢失金额的情况
+     */
     public static void main(String[] args) {
-        String totalAmount = "57.8";
-        String[][] items = {{"49", "1"}, {"49", "1"}};
-
+        String totalAmount = "3.33";
         List<Item> orderItems = Lists.newArrayList();
-        int id = 1;
-        for (String[] item : items) {
-            Item saleItem = new Item();
-            saleItem.setProduct(String.valueOf(id++));
-            saleItem.setSalePrice(new BigDecimal(item[0]));
-            saleItem.setSkuNumber(Integer.parseInt(item[1]));
-            orderItems.add(saleItem);
-        }
+        orderItems.add(new Item("A",new BigDecimal("1"),2));
+        orderItems.add(new Item("B",new BigDecimal("1"),2));
 
         Map<Item, BigDecimal> map = DivideAmountUtil.calculateDivideAmount(
                 orderItems,
@@ -103,8 +102,6 @@ public class DivideAmountUtil {
         for (Item item : map.keySet()) {
             System.err.println(item.getProduct() + " : " + map.get(item));
         }
-
-
     }
 
     @Data
@@ -112,6 +109,12 @@ public class DivideAmountUtil {
         private String product;
         private BigDecimal salePrice;
         private Integer skuNumber;
+
+        public Item(String product, BigDecimal salePrice, Integer skuNumber){
+            this.product = product;
+            this.salePrice = salePrice;
+            this.skuNumber = skuNumber;
+        }
     }
 
 }
