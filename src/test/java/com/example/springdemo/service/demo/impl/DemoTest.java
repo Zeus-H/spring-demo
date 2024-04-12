@@ -6,6 +6,7 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.fastjson.JSONObject;
@@ -17,7 +18,8 @@ import com.example.springdemo.service.demo.DemoService;
 import com.example.springdemo.service.demo.ReturnDelivery;
 import com.example.springdemo.service.demo.impl.util.TestFileUtil;
 import javafx.util.Pair;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -287,7 +289,7 @@ public class DemoTest {
     }
 
     @Test
-    public void seven(){
+    public void seven() {
         BufferedReader myBufferedReader = null;
 
         try {
@@ -314,6 +316,26 @@ public class DemoTest {
             }
         }
         System.out.println("Done");
+    }
+
+    @Test
+    public void eight() {
+        String doc = "{\"string\":\"ems\"}";
+        DemoData data = JSONObject.parseObject(doc, DemoData.class);
+        System.out.println(JSONObject.toJSONString(data));
+        if (StringUtils.isNotBlank(data.getIgnore()) && "1".equals(data.getIgnore())) {
+            System.out.println("没报错");
+        }
+    }
+
+    @Test
+    public void nine() {
+
+    }
+
+    @Test
+    public void ten() {
+
     }
 
     /**
