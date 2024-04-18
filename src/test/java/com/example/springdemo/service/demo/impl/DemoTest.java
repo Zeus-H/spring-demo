@@ -10,6 +10,9 @@ import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.fastjson.JSONObject;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.example.springdemo.entity.demo.Address;
 import com.example.springdemo.entity.demo.Demo;
 import com.example.springdemo.entity.demo.Rule;
@@ -27,6 +30,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -330,13 +334,71 @@ public class DemoTest {
 
     @Test
     public void nine() {
+        Kryo kryo = new Kryo();
+        kryo.register(DemoData.class);
+
+        // 创建对象
+        DemoData data = new DemoData();
+        data.setString("ems");
+        data.setIgnore("1");
+
+        // 序列化
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = new Output(baos);
+        kryo.writeObject(output, data);
+        output.close();
+
+        // 反序列化
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        Input input = new Input(bais);
+        DemoData demoData = kryo.readObject(input, DemoData.class);
+        input.close();
+
+        System.out.println(demoData.toString());
+    }
+
+    @Test
+    public void ten() throws Exception {
+        // 获取 内部类 的class 对象 并且创建类的实例
+        Class<?> targetClass = Class.forName("com.example.springdemo.service.demo.impl.DemoTest$DemoData");
+        DemoData targetDemo = (DemoData) targetClass.newInstance();
+
+        // 获取对象中定义的所有方法
+        Method[] methods = targetClass.getDeclaredMethods();
+        for (Method method : methods) {
+            System.out.println(method.getName());
+        }
+
+        System.out.println("=========================================");
+
+        // 获取指定的方法并调用
+        Method publicMethod = targetClass.getDeclaredMethod("publicMethod",String.class);
+        publicMethod.invoke(targetDemo, "Java");
+
+        // 获取指定参数并对参数进行修改
+        Field field = targetClass.getDeclaredField("string");
+        // 为了修改类中参数，取消private的安全检查
+        field.setAccessible(true);
+        field.set(targetDemo, "python");
+        System.out.println("=========================================");
+
+        // 调用 private 方法
+        Method privateMethod = targetClass.getDeclaredMethod("privateMethod");
+        // 为了修改类中参数，取消private的安全检查
+        privateMethod.setAccessible(true);
+        privateMethod.invoke(targetDemo);
+    }
+
+    @Test
+    public void eleven() {
 
     }
 
     @Test
-    public void ten() {
+    public void twelve() {
 
     }
+
 
     /**
      * 导出的demo代码
@@ -389,6 +451,18 @@ public class DemoTest {
         /** 忽略这个字段 */
         @ExcelIgnore
         private String ignore;
+
+        public DemoData() {
+            string = "Java";
+        }
+
+        public void publicMethod(String s) {
+            System.out.println("I love " + s);
+        }
+
+        private void privateMethod() {
+            System.out.println("string = " + string);
+        }
     }
 
     private List<DemoData> data(List<Integer> totalNums) {
