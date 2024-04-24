@@ -391,14 +391,26 @@ public class DemoTest {
 
     @Test
     public void eleven() {
+        // 根据用户id生成对应的邀请码，gen 的后几位会出现一致，gen2经过了混淆减少相同之处，decode是gen2的反解析的方法
+        for (long i = 10000L; i < 10010L; i++) {
+            String code = new InviteCode().gen(i);
+            System.out.println("Generated Code: " + code);
+        }
 
+        System.out.println("=============================");
+
+        for (long i = 10000L; i < 10010L; i++) {
+            String code2 = new InviteCode().gen2(i);
+            System.out.println("Generated Code2: " + code2);
+            Long decode = new InviteCode().decode(code2);
+            System.out.println("Generated decode: " + decode);
+        }
     }
 
     @Test
     public void twelve() {
 
     }
-
 
     /**
      * 导出的demo代码
@@ -475,5 +487,127 @@ public class DemoTest {
             list.add(data);
         }
         return list;
+    }
+
+    private static class InviteCode {
+        // 定义字符数组，假设为32个不同的字符
+        private static final char[] CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789".toCharArray();
+        // 定义字符数组的长度
+        private static final int CHARS_LENGTH = CHARS.length;
+        // 定义生成的邀请码长度
+        private static final int CODE_LENGTH = 6;
+        // 素数用于乘法操作
+        private static final long PRIME1 = 31;
+        // 盐值用于加法操作
+        private static final long SLAT = 1361;
+        // 使用的第二个素数，用于索引乱序操作
+        private static final int PRIME2 = 29;
+
+        /**
+         * 生成邀请码
+         *
+         * @param id 唯一的id主键
+         * @return code
+         */
+        public String gen(Long id) {
+            // 进行补位
+            id = id * PRIME1 + SLAT;
+            // 将id转换成32进制的值
+            long[] b = new long[CODE_LENGTH];
+            // 32进制数
+            b[0] = id;
+            for (int i = 0; i < CODE_LENGTH - 1; i++) {
+                b[i + 1] = b[i] / CHARS_LENGTH;
+                b[i] = b[i] % CHARS_LENGTH;
+            }
+            // 增加一个简单的校验位
+            b[5] = (b[2] + b[3] + b[4]) * PRIME1 % CHARS_LENGTH;
+
+            StringBuilder buffer = new StringBuilder();
+            Arrays.stream(b).boxed().map(Long::intValue).map(t -> CHARS[t]).forEach(buffer::append);
+            return buffer.toString();
+        }
+
+        /**
+         * 生成邀请码
+         *
+         * @param id 唯一的id主键
+         * @return code
+         */
+        public String gen2(Long id) {
+            // 进行补位，并扩大整体
+            id = id * PRIME1 + SLAT;
+            // 将id转换成32进制的值
+            long[] b = new long[CODE_LENGTH];
+            // 32进制数
+            b[0] = id;
+            for (int i = 0; i < CODE_LENGTH - 1; i++) {
+                b[i + 1] = b[i] / CHARS_LENGTH;
+                // 扩大每一位的差异
+                b[i] = (b[i] + i * b[0])% CHARS_LENGTH;
+            }
+            // 增加一个简单的校验位
+            b[5] = (b[0] + b[1] + b[2] + b[3] + b[4]) * PRIME1 % CHARS_LENGTH;
+            //进行混淆
+            long[] codeIndexArray = new long[CODE_LENGTH];
+            for (int i = 0; i < CODE_LENGTH; i++) {
+                codeIndexArray[i] = b[i * PRIME2 % CODE_LENGTH];
+            }
+
+
+            StringBuilder buffer = new StringBuilder();
+            Arrays.stream(codeIndexArray).boxed().map(Long::intValue).map(t -> CHARS[t]).forEach(buffer::append);
+            return buffer.toString();
+        }
+
+        /**
+         * 将邀请码解密成原来的id
+         *
+         * @param code 邀请码
+         * @return id
+         */
+        public Long decode(String code) {
+            if (code.length() != CODE_LENGTH) {
+                return null;
+            }
+            // 将字符还原成对应数字
+            long[] a = new long[CODE_LENGTH];
+            for (int i = 0; i < CODE_LENGTH; i++) {
+                char c = code.charAt(i);
+                int index = findIndex(c);
+                if (index == -1) {
+                    // 异常字符串
+                    return null;
+                }
+                a[i * PRIME2 % CODE_LENGTH] = index;
+            }
+
+            long[] b = new long[CODE_LENGTH];
+            for (int i = CODE_LENGTH - 2; i >= 0; i--) {
+                b[i] = (a[i] - a[0] * i + (long) CHARS_LENGTH * i) % CHARS_LENGTH;
+            }
+
+            long res = 0;
+            for (int i = CODE_LENGTH - 2; i >= 0; i--) {
+                res += b[i];
+                res *= (i > 0 ? CHARS_LENGTH : 1);
+            }
+            return (res - SLAT) / PRIME1;
+        }
+
+        /**
+         * 查找对应字符的index
+         *
+         * @param c 字符
+         * @return index
+         */
+        private static int findIndex(char c) {
+            for (int i = 0; i < CHARS_LENGTH; i++) {
+                if (CHARS[i] == c) {
+                    return i;
+                }
+            }
+            return -1;
+        }
     }
 }
