@@ -1,13 +1,17 @@
 package com.example.springdemo.service.demo.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.springdemo.common.annotation.Encrypt;
 import com.example.springdemo.common.annotation.EncryptField;
 import com.example.springdemo.entity.demo.Demo;
+import com.example.springdemo.entity.demo.Rule;
 import com.example.springdemo.mapper.demo.DemoMapper;
 import com.example.springdemo.service.cache.CacheService;
 import com.example.springdemo.service.cache.CacheType;
 import com.example.springdemo.service.demo.DemoService;
-import com.example.springdemo.common.annotation.Encrypt;
+import io.vertx.core.json.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.env.YamlPropertySourceLoader;
@@ -21,6 +25,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -81,6 +86,12 @@ public class DemoServiceImpl implements DemoService {
     public List<Demo> query(Demo demo) {
         return repo.selectByCondition(demo);
     }
+
+    @Override
+    public List<Demo> queryByRules(List<Rule> rules) {
+        return repo.selectByRules(rules);
+    }
+
 
     /**
      * 设置实体默认值

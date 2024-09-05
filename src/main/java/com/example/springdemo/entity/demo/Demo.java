@@ -8,9 +8,11 @@ import lombok.Data;
 @TableName("t_demo")
 public class Demo {
     private String id;
+    // 注解加密
     @EncryptField
     private String name;
     private String age;
+    // 注解加密
     @EncryptField
     private String mobile;
     private String encryptedName;

@@ -1,6 +1,7 @@
 package com.example.springdemo.service.demo;
 
 import com.example.springdemo.entity.demo.Demo;
+import com.example.springdemo.entity.demo.Rule;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface DemoService {
 	Demo selectById(String id);
 
 	List<Demo> query(Demo demo);
+
+	List<Demo> queryByRules(List<Rule> rules);
 }

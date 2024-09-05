@@ -17,6 +17,9 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * 加密 注解用于方法上
+ */
 @Component
 @Aspect
 public class EncryptAspect {
