@@ -23,8 +23,6 @@ public class Demo {
         for (int i : arr) {
             System.out.println(i);
         }
-
-        // 测试merge
-        // 测试 测试
+        // 测试 rebase
     }
 }
